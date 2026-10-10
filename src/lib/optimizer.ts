@@ -10,15 +10,6 @@ const MAX_NEW_ASSETS: Record<(typeof OPTIMIZABLE_ASSETS)[number], number> = {
   park: 40,
   metro: 8,
 }
-// Keep the budget mode from spending the whole allowance on repeated cheap tiles.
-// Target mode uses the larger limits above because its job is to reach a reduction.
-const MAX_BUDGET_ASSETS: Record<(typeof OPTIMIZABLE_ASSETS)[number], number> = {
-  solar: 8,
-  wind: 1,
-  urbanforest: 6,
-  park: 8,
-  metro: 2,
-}
 type Position = { row: number; col: number }
 
 function nearTargets(itemId: ItemId, row: number, col: number, targets: ReturnType<typeof listAssets>, radius: number) {
@@ -262,14 +253,15 @@ export function optimizeCity(source: City, budget: number): City {
   const added: Record<(typeof OPTIMIZABLE_ASSETS)[number], number> = { solar: 0, wind: 0, urbanforest: 0, park: 0, metro: 0 }
   let currentTotal = computeCarbon(city, MODEL_HORIZON).total
   const cheapestAsset = Math.min(...OPTIMIZABLE_ASSETS.map((itemId) => ITEMS[itemId].cost))
-  const maxAdditions = Math.min(city.flat().filter((cell) => cell === null).length, Math.floor(availableBudget / cheapestAsset))
+  const totalAssetLimit = OPTIMIZABLE_ASSETS.reduce((sum, itemId) => sum + MAX_NEW_ASSETS[itemId], 0)
+  const maxAdditions = Math.min(city.flat().filter((cell) => cell === null).length, totalAssetLimit, Math.floor(availableBudget / cheapestAsset))
 
   for (let addition = 0; addition < maxAdditions; addition += 1) {
     let best: { itemId: (typeof OPTIMIZABLE_ASSETS)[number]; row: number; col: number; benefitPerCost: number; total: number } | null = null
     const assets = listAssets(city)
 
     for (const itemId of OPTIMIZABLE_ASSETS) {
-      if (added[itemId] >= MAX_BUDGET_ASSETS[itemId]) continue
+      if (added[itemId] >= MAX_NEW_ASSETS[itemId]) continue
       const cost = ITEMS[itemId].cost
       if (spent + cost > availableBudget) continue
 

@@ -17,7 +17,7 @@ export default function TopBar({
   onCompareChange,
   onOpenSources,
 }: Props) {
-  useEffect(() => { document.title = "city_verse" }, [])
+  useEffect(() => { document.title = "Buildit" }, [])
   const resetCity = useCityStore((state) => state.resetCity)
   const loadStarter = useCityStore((state) => state.loadStarter)
   const year = useCityStore((state) => state.year)
@@ -35,7 +35,7 @@ export default function TopBar({
             CITY CARBON PLANNER
           </div>
           <div className="text-lg font-semibold tracking-tight text-white">
-            city_verse
+            Buildit
           </div>
         </div>
       </div>

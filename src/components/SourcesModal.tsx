@@ -1,17 +1,22 @@
 import { Search, X } from "lucide-react"
 import { useState } from "react"
-import { CARBON_SOURCE_INPUTS, ITEM_IDS, ITEMS, type CityItem } from "../data/items"
-import { GRID_EMISSIONS_FACTOR, MODEL_HORIZON } from "../lib/carbon"
+import { CARBON_SOURCE_INPUTS, type CityItem } from "../data/items"
 
-type SourceRow = {
+type Row = {
+  id: string
   name: string
   value: number
   unit: string
   status: CityItem["sourceStatus"]
   basis: string
-  url?: string
+}
+
+type Group = {
+  url: string
+  ref: string
   relatedRef?: string
   relatedUrl?: string
+  rows: Row[]
 }
 
 const labels: Record<string, string> = {
@@ -44,7 +49,7 @@ const labels: Record<string, string> = {
   TRANSPORT_MULTIPLIER_NEAR_METRO: "Transport multiplier near metro",
   ENERGY_MULTIPLIER_NEAR_PARK: "Energy multiplier near park",
   "industry.floorArea": "Industry facility floor area",
-  "industry.embodiedKgPerM2": "Industry embodied carbon intensity (A1 to A5)",
+  "industry.embodiedKgPerM2": "Industry embodied carbon intensity (A1–A5)",
   "industry.energyKwhPerM2Yr": "Industry building energy intensity",
   "industry.cost": "Industry capital cost",
   "industry.capacity": "Industry worker capacity",
@@ -63,10 +68,10 @@ const labels: Record<string, string> = {
   "wastewater.energyKwhPerM3": "Wastewater electricity per m³",
   "wastewater.directKgPerM3": "Wastewater fugitive GHG per m³",
   "wastewater.cost": "Wastewater plant capital cost",
-  "datacenter.itLoadMw": "Data center IT load",
-  "datacenter.utilization": "Data center average utilization",
-  "datacenter.pue": "Data center power usage effectiveness",
-  "datacenter.cost": "Data center capital cost",
+  "datacenter.itLoadMw": "Data-center IT load",
+  "datacenter.utilization": "Data-center average utilization",
+  "datacenter.pue": "Data-center power usage effectiveness",
+  "datacenter.cost": "Data-center capital cost",
   "hotel.floorArea": "Hotel facility floor area",
   "hotel.energyKwhPerM2Yr": "Hotel energy intensity",
   "hotel.cost": "Hotel capital cost",
@@ -81,7 +86,7 @@ const labels: Record<string, string> = {
   "urbanforest.co2KgPerTreeYr": "Urban tree annual sequestration",
   "urbanforest.cost": "Urban forest cost",
   "wind.capacityMw": "Wind turbine rated capacity",
-  "wind.generationGWh": "India wind generation FY 2025 to 2026",
+  "wind.generationGWh": "India wind generation FY 2025–26",
   "wind.installedCapacityMw": "India wind installed capacity",
   "wind.cost": "Wind turbine cost",
   "busdepot.buses": "Diesel depot fleet size",
@@ -91,36 +96,35 @@ const labels: Record<string, string> = {
   "busdepot.cost": "Bus depot capital cost",
 }
 
-const inputRows: SourceRow[] = Object.entries(CARBON_SOURCE_INPUTS).map(([id, source]) => ({
-  name: labels[id] ?? id,
-  value: source.value,
-  unit: source.unit,
-  status: source.status,
-  basis: source.ref || "Assumption supplied in the attached table.",
-  url: source.url,
-  relatedRef: source.relatedRef,
-  relatedUrl: source.relatedUrl,
-}))
+const groupMap = new Map<string, Group>()
+const unsourced: Row[] = []
 
-const calculatedRows: SourceRow[] = ITEM_IDS.flatMap((id): SourceRow[] => {
-  const item = ITEMS[id]
-  const perAsset = item.footprint > 1 ? `per ${item.footprint} by ${item.footprint} asset` : "per asset"
-  return [
-    { name: `${item.label}: embodied carbon`, value: item.embodied, unit: `tCO₂e ${perAsset}`, status: item.sourceStatus, basis: item.description },
-    { name: `${item.label}: net annual energy`, value: item.energy, unit: `MWh / year ${perAsset}`, status: item.sourceStatus, basis: item.description },
-    { name: `${item.label}: annual direct emissions`, value: item.directEmissions, unit: `tCO₂e / year ${perAsset}`, status: item.sourceStatus, basis: item.description },
-    { name: `${item.label}: annual carbon uptake`, value: item.sink, unit: `tCO₂e / year ${perAsset}`, status: item.sourceStatus, basis: item.description },
-  ]
+Object.entries(CARBON_SOURCE_INPUTS).forEach(([id, source]) => {
+  const row: Row = {
+    id,
+    name: labels[id] ?? id,
+    value: source.value,
+    unit: source.unit,
+    status: source.status,
+    basis: source.ref || "Assumption: no source found yet.",
+  }
+  if (source.url) {
+    const group = groupMap.get(source.url) ?? {
+      url: source.url,
+      ref: source.ref,
+      relatedRef: source.relatedRef,
+      relatedUrl: source.relatedUrl,
+      rows: [],
+    }
+    group.rows.push(row)
+    groupMap.set(source.url, group)
+  } else {
+    unsourced.push(row)
+  }
 })
 
-const sources: SourceRow[] = [
-  ...calculatedRows,
-  ...inputRows,
-  { name: "Projection horizon", value: MODEL_HORIZON, unit: "years", status: "assumption", basis: "Shared by the metrics, chart, and optimizer." },
-  { name: "Asset footprints", value: 3, unit: "maximum tiles per side", status: "assumption", basis: "Assets use their listed 1×1, 2×2, or 3×3 grid area. Larger facilities scale with their footprint." },
-  { name: "Optimizer relocation rule", value: 48, unit: "maximum relocation steps per run", status: "assumption", basis: "The optimizer can move homes and energy users closer to metro or parks when the 30 year result improves. It may also swap buildings of the same size. Roads stay in place, and existing buildings are never removed." },
-  { name: "Optimizer mix and siting rules", value: 75, unit: "maximum new solar assets for a reduction target", status: "assumption", basis: "The reduction target can add up to 75 solar farms, 1 wind turbine, 40 urban forests, 40 parks, and 8 metro stops, within available space. Budget runs use lower limits and follow the entered budget. Solar goes near large energy users, green space near homes and offices, and metro near housing. Roads are not added." },
-]
+const groups = Array.from(groupMap.values())
+const sourcedCount = groups.reduce((total, group) => total + group.rows.length, 0)
 
 const statusStyles: Record<CityItem["sourceStatus"], string> = {
   cited: "bg-emerald/15 text-emerald",
@@ -129,58 +133,174 @@ const statusStyles: Record<CityItem["sourceStatus"], string> = {
   placeholder: "bg-raised text-muted",
 }
 
-export default function SourcesModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+function host(url: string) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "")
+  } catch {
+    return url
+  }
+}
+
+function StatusBadge({ status }: { status: CityItem["sourceStatus"] }) {
+  return (
+    <strong
+      className={`rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${statusStyles[status]}`}
+    >
+      {status}
+    </strong>
+  )
+}
+
+export default function SourcesModal({
+  open,
+  onClose,
+}: {
+  open: boolean
+  onClose: () => void
+}) {
   const [query, setQuery] = useState("")
   if (!open) return null
-  const normalizedQuery = query.trim().toLowerCase()
-  const visibleSources = normalizedQuery
-    ? sources.filter((row) => `${row.name} ${row.unit} ${row.status} ${row.basis}`.toLowerCase().includes(normalizedQuery))
-    : sources
+
+  const q = query.trim().toLowerCase()
+  const visibleGroups = q
+    ? groups.filter((group) =>
+        `${group.ref} ${group.url} ${group.rows.map((row) => row.name).join(" ")}`
+          .toLowerCase()
+          .includes(q),
+      )
+    : groups
+  const visibleUnsourced = q
+    ? unsourced.filter((row) =>
+        `${row.name} ${row.basis}`.toLowerCase().includes(q),
+      )
+    : unsourced
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay p-6 backdrop-blur-sm" onMouseDown={onClose}>
-      <section aria-labelledby="sources-title" aria-modal="true" className="w-full max-w-3xl rounded-2xl border border-line-strong bg-panel-solid p-5 shadow-2xl" onMouseDown={(event) => event.stopPropagation()} role="dialog">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-overlay p-6 backdrop-blur-sm"
+      onMouseDown={onClose}
+    >
+      <section
+        aria-labelledby="sources-title"
+        aria-modal="true"
+        className="w-full max-w-3xl rounded-2xl border border-line-strong bg-panel-solid p-5 shadow-2xl"
+        onMouseDown={(event) => event.stopPropagation()}
+        role="dialog"
+      >
         <div className="flex items-start justify-between">
           <div>
             <div className="eyebrow">Transparent assumptions</div>
-            <div className="mt-1 text-xl font-semibold text-white" id="sources-title">Model sources and calculated values</div>
+            <div
+              className="mt-1 text-xl font-semibold text-white"
+              id="sources-title"
+            >
+              Where our numbers come from
+            </div>
             <p className="mt-1 max-w-2xl text-xs leading-relaxed text-muted">
-              The 40 × 40 city model separates research inputs, calculated values, and assumptions. Search by asset or source. Estimates and missing construction data are labeled clearly.
+              This is a curated list of the sources we used to build the model, along with the assumptions we made where no source was available. We welcome feedback and suggestions for better sources.
             </p>
-            <p className="mt-2 max-w-2xl text-[11px] leading-relaxed text-dim">
-              Embodied carbon = area × kgCO₂e/m² ÷ 1,000. Annual energy = area × kWh/m² ÷ 1,000. Energy use and pond gas create emissions. Solar and parks can reduce the total. Homes near Metro get a transport adjustment. Parks can lower nearby energy use. Larger facilities scale with their 1×1, 2×2, or 3×3 footprint.
+            <p className="mt-2 text-[11px] text-dim">
+              {groups.length} source links · {sourcedCount} sourced inputs ·{" "}
+              {unsourced.length} assumptions without a source
             </p>
           </div>
-          <button aria-label="Close sources" className="icon-button" onClick={onClose} title="Close sources" type="button"><X size={17} /></button>
+          <button
+            aria-label="Close sources"
+            className="icon-button"
+            onClick={onClose}
+            title="Close sources"
+            type="button"
+          >
+            <X size={17} />
+          </button>
         </div>
-        <div className="mt-5 flex items-center gap-3">
+
+        <div className="mt-4 flex items-center gap-3">
           <label className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-line bg-raised/60 px-3 py-2 text-xs text-muted">
             <Search size={14} aria-hidden="true" />
-            <input aria-label="Search sources and model values" className="min-w-0 flex-1 bg-transparent text-primary outline-none placeholder:text-dim" onChange={(event) => setQuery(event.target.value)} placeholder="Search assets, sources, or assumptions" value={query} />
+            <input
+              aria-label="Search sources"
+              className="min-w-0 flex-1 bg-transparent text-primary outline-none placeholder:text-dim"
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search by asset or source"
+              value={query}
+            />
           </label>
-          <span className="shrink-0 text-[10px] text-muted">{visibleSources.length} rows · 40 × 40 grid</span>
         </div>
-        <div className="mt-3 max-h-[55vh] overflow-auto rounded-xl border border-line">
-          <table className="w-full min-w-[760px] border-collapse text-left text-xs">
-            <thead className="sticky top-0 bg-raised text-[10px] uppercase tracking-wider text-muted">
-              <tr><th className="px-4 py-3">Input / result</th><th className="px-4 py-3">Value</th><th className="px-4 py-3">Unit</th><th className="px-4 py-3">Status and basis</th></tr>
-            </thead>
-            <tbody>
-              {visibleSources.map(({ name, value, unit, status, basis, url, relatedRef, relatedUrl }) => (
-                <tr className="border-t border-line text-secondary" key={name}>
-                  <td className="px-4 py-3 font-medium text-primary">{name}</td>
-                  <td className="px-4 py-3 font-mono tabular-nums">{value.toLocaleString("en-IN", { maximumFractionDigits: 3 })}</td>
-                  <td className="px-4 py-3 text-muted">{unit}</td>
-                  <td className="px-4 py-3">
-                    <span className="inline-flex items-start gap-1.5">
-                      <strong className={`mt-0.5 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${statusStyles[status]}`}>{status}</strong>
-                      <span>{basis}{url ? <> <a className="text-accent underline underline-offset-2" href={url} rel="noreferrer" target="_blank">Source link</a></> : null}{relatedRef && relatedUrl ? <> {relatedRef} <a className="text-accent underline underline-offset-2" href={relatedUrl} rel="noreferrer" target="_blank">Regional context</a></> : null}</span>
+
+        <div className="mt-3 max-h-[58vh] overflow-auto rounded-xl border border-line">
+          <div className="sticky top-0 z-10 bg-raised px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted">
+            Source links ({visibleGroups.length})
+          </div>
+          {visibleGroups.map((group) => (
+            <div
+              className="border-t border-line px-4 py-3 text-xs text-secondary"
+              key={group.url}
+            >
+              <a
+                className="font-medium text-accent underline underline-offset-2"
+                href={group.url}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Open source ↗ {host(group.url)}
+              </a>
+              <p className="mt-1 leading-relaxed">{group.ref}</p>
+              {group.relatedRef && group.relatedUrl ? (
+                <p className="mt-1 leading-relaxed text-muted">
+                  {group.relatedRef}{" "}
+                  <a
+                    className="text-accent underline underline-offset-2"
+                    href={group.relatedUrl}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Regional context ↗
+                  </a>
+                </p>
+              ) : null}
+              <ul className="mt-2 space-y-1">
+                {group.rows.map((row) => (
+                  <li
+                    className="flex flex-wrap items-center gap-2"
+                    key={row.id}
+                  >
+                    <StatusBadge status={row.status} />
+                    <span className="text-primary">{row.name}</span>
+                    <span className="font-mono tabular-nums text-white">
+                      {row.value.toLocaleString("en-IN", {
+                        maximumFractionDigits: 3,
+                      })}
                     </span>
-                  </td>
-                </tr>
-              ))}
-              {visibleSources.length === 0 ? <tr><td className="px-4 py-8 text-center text-muted" colSpan={4}>No source rows match that search.</td></tr> : null}
-            </tbody>
-          </table>
+                    <span className="text-muted">{row.unit}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          {visibleGroups.length === 0 ? (
+            <div className="border-t border-line px-4 py-6 text-center text-xs text-muted">
+              No source links match that search.
+            </div>
+          ) : null}
+
+          <div className="sticky top-0 z-10 border-t border-line bg-raised px-4 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted">
+            Assumptions with no source yet ({visibleUnsourced.length})
+          </div>
+          {visibleUnsourced.map((row) => (
+            <div
+              className="flex flex-wrap items-center gap-2 border-t border-line px-4 py-2 text-xs text-secondary"
+              key={row.id}
+            >
+              <StatusBadge status={row.status} />
+              <span className="font-medium text-primary">{row.name}</span>
+              <span className="font-mono tabular-nums text-white">
+                {row.value.toLocaleString("en-IN", { maximumFractionDigits: 3 })}
+              </span>
+              <span className="text-muted">{row.unit}</span>
+              <span className="text-muted">· {row.basis}</span>
+            </div>
+          ))}
         </div>
       </section>
     </div>
