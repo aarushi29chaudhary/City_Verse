@@ -1,0 +1,596 @@
+{
+  "GRID_FACTOR": {
+    "value": 0.727,
+    "unit": "tCO2e/MWh",
+    "ref": "CEA CO2 Baseline Database, weighted average emission factor adjusted for renewables, 2023-24 (reported via SolarQuarter). Verify against the latest CEA version on cea.nic.in",
+    "url": "https://solarquarter.com/2025/01/06/co2-baseline-database-highlights-indias-progress-in-renewable-energy-and-emission-reduction-cea/",
+    "year": 2024,
+    "status": "candidate"
+  },
+  "TRANSPORT_T_PER_PERSON": {
+    "value": 0.34,
+    "unit": "tCO2e/person/year",
+    "ref": "Derived: CEEW states India per-capita emissions 2.4 tCO2e and transport ~14% of national GHG; 2.4 x 0.14 = 0.34. National average, car-heavy cities are higher",
+    "url": "https://www.ceew.in/sites/default/files/ceew-greenhouse-gas-accounting-road-transport-emissions-erode.pdf",
+    "year": 2026,
+    "status": "candidate"
+  },
+  "residential.floorArea": {
+    "value": 6000,
+    "unit": "m²",
+    "ref": "Assumption: design choice (about 4 floors on a 1,600 m2 footprint)",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "residential.embodiedKgPerM2": {
+    "value": 454,
+    "unit": "kgCO2e/m2",
+    "ref": "Akshatha, Palaniappan & Rao, Embodied carbon variability in Indian high-rise residential buildings: a case-based assessment (mean of 4 databases, range 373-530)",
+    "url": "https://dl.lib.uom.lk/handle/123/24173",
+    "year": 2025,
+    "status": "candidate"
+  },
+  "residential.energyKwhPerM2Yr": {
+    "value": 80,
+    "unit": "kWh/m²/year",
+    "ref": "Building Energy Efficiency Through the BEE Mandate: average residential electricity use ~80 kWh/m2/yr",
+    "url": "https://devalt.org/newsletter/oct10/lead.htm",
+    "year": 2010,
+    "status": "candidate"
+  },
+  "residential.residents": {
+    "value": 200,
+    "unit": "people",
+    "ref": "Assumption: 6,000 m2 / 30 m2 per person",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "residential.cost": {
+    "value": 30,
+    "unit": "₹ crore",
+    "ref": "Assumption: no source found",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "office.floorArea": {
+    "value": 8000,
+    "unit": "m²",
+    "ref": "Assumption: design choice",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "office.embodiedKgPerM2": {
+    "value": 550,
+    "unit": "kg CO2e/m²",
+    "ref": "Assumption: no Indian office source found yet",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "office.energyKwhPerM2Yr": {
+    "value": 180,
+    "unit": "kWh/m²/year",
+    "ref": "BEE/UNDP-GEF presentation: national commercial building benchmark ~180 kWh/m2/yr",
+    "url": "https://rehva.eu/fileadmin/user_upload/REHVA-ISHRAE_EC_BEE_seminar_S_Kumar_Deepa_.pdf",
+    "year": null,
+    "status": "candidate"
+  },
+  "office.cost": {
+    "value": 45,
+    "unit": "₹ crore",
+    "ref": "Assumption: no source found",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "road.floorArea": {
+    "value": 1600,
+    "unit": "m²",
+    "ref": "Assumption: design choice (one tile)",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "road.embodiedKgPerM2": {
+    "value": 50,
+    "unit": "kg CO2e/m²",
+    "ref": "Assumption: no source found yet",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "road.energyKwhPerM2Yr": {
+    "value": 3,
+    "unit": "kWh/m²/year",
+    "ref": "Assumption: street lighting, no source found",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "road.cost": {
+    "value": 5,
+    "unit": "₹ crore",
+    "ref": "Assumption: no source found",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "park.floorArea": {
+    "value": 1600,
+    "unit": "m²",
+    "ref": "Assumption: design choice (one tile)",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "park.embodiedKgPerM2": {
+    "value": 6,
+    "unit": "kg CO2e/m²",
+    "ref": "Assumption: no source found",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "park.cost": {
+    "value": 3,
+    "unit": "₹ crore",
+    "ref": "Assumption: no source found",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "park.sink": {
+    "value": 1.75,
+    "unit": "tCO2e/year",
+    "ref": "Assumption: half of the upper bound 3.5 t/tile, from ~6 tC/ha/yr forest rate (Ramachandra et al., Indian Forester 2017) x 0.16 ha. Urban parks absorb less than forests",
+    "url": "https://wgbis.ces.iisc.ac.in/sdss/BUiS/publications/IISc_TVR_143_4_3.pdf",
+    "year": 2017,
+    "status": "assumption"
+  },
+  "solar.embodiedTotal": {
+    "value": 2055,
+    "unit": "tCO2e",
+    "ref": "800 kWp x 2,569 kgCO2e/kWp (life cycle GHG of 1 kWp multi-crystalline PV, Sri Lanka study, not India-specific). 800 kWp tile size is an assumption",
+    "url": "https://dl.lib.uom.lk/bitstreams/79f6b83e-7e0d-4486-a598-eef000d38e4e/download",
+    "year": null,
+    "status": "candidate"
+  },
+  "solar.generationMWhYr": {
+    "value": 1214,
+    "unit": "MWh/year",
+    "ref": "800 kWp x 1,518 kWh/kWp/yr final yield (Singh et al., 10 MW grid-connected PV system, North India). 800 kWp tile size is an assumption",
+    "url": "https://pure.kfupm.edu.sa/en/publications/implementation-a-10-mw-grid-connected-solar-photovoltaic-system-i/",
+    "year": null,
+    "status": "candidate"
+  },
+  "solar.cost": {
+    "value": 40,
+    "unit": "₹ crore",
+    "ref": "Assumption: no source found",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "metro.floorArea": {
+    "value": 5000,
+    "unit": "m²",
+    "ref": "Assumption: design choice",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "metro.embodiedKgPerM2": {
+    "value": 800,
+    "unit": "kg CO2e/m²",
+    "ref": "Assumption: no source found yet (try DMRC sustainability reports)",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "metro.energyKwhPerM2Yr": {
+    "value": 250,
+    "unit": "kWh/m²/year",
+    "ref": "Assumption: no source found yet (try DMRC sustainability reports)",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "metro.cost": {
+    "value": 120,
+    "unit": "₹ crore",
+    "ref": "Assumption: no source found",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "TRANSPORT_MULTIPLIER_NEAR_METRO": {
+    "value": 0.7,
+    "unit": "multiplier",
+    "ref": "Model assumption: residential within 3 tiles of a metro station emits 30% less transport carbon",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "ENERGY_MULTIPLIER_NEAR_PARK": {
+    "value": 0.92,
+    "unit": "multiplier",
+    "ref": "Model assumption: buildings adjacent to a park use 8% less cooling energy",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "industry.floorArea": {
+    "value": 6400,
+    "unit": "m²",
+    "ref": "Design assumption: a 2×2 asset with four 1,600 m² tiles.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "industry.embodiedKgPerM2": {
+    "value": 631,
+    "unit": "kgCO2e/m²",
+    "ref": "Indian factory typology average for upfront life-cycle stages A1–A5 in the SED Fund / IGBC building baseline report (limited factory sample).",
+    "url": "https://d1owjfc1d3lv0e.cloudfront.net/website-assets/frontend-assets/html_pdfs/SED_fund_report.pdf",
+    "year": 2025,
+    "status": "candidate"
+  },
+  "industry.energyKwhPerM2Yr": {
+    "value": 63.5,
+    "unit": "kWh/m²/year",
+    "ref": "Midpoint of the reported 58–69 kWh/m²/year EPI range for Jagadhari railway workshop buildings. Building utility benchmark only; production/process energy is not represented.",
+    "url": "https://ibc.org.in/wp-content/uploads/pdf/26ACNS-Preliminary-Publication-Seminar-on-NetZero2070.pdf",
+    "year": 2022,
+    "status": "candidate"
+  },
+  "industry.cost": {
+    "value": 70,
+    "unit": "₹ crore",
+    "ref": "Retained project assumption; no sufficiently comparable current construction cost was found for the modeled facility.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "industry.capacity": {
+    "value": 0,
+    "unit": "people",
+    "ref": "No occupancy figure supplied by the selected factory sources; industrial worker capacity is not modeled.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "water.area": {
+    "value": 6400,
+    "unit": "m² water surface / asset",
+    "ref": "Design assumption: a 2×2 asset with four 1,600 m² tiles.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "water.embodied": {
+    "value": 0,
+    "unit": "tCO2e / asset",
+    "ref": "Construction emissions excluded because the model has no excavation, liner, bank, or bill-of-quantities specification; zero here means unmodeled, not carbon-free construction.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "water.directKgPerM2Yr": {
+    "value": 0.48922,
+    "unit": "kgCO2e/m²/year",
+    "ref": "Calculated from the study's mean urban artificial-pond fluxes: 8.33 g CH4/m²/year × 34 (100-year GWP) + 206 g CO2/m²/year. Swedish urban-pond proxy; study sampled during daytime and did not measure ebullition, so the value is uncertain and may be low. See the Indian inland-water study for regional variability.",
+    "url": "https://esajournals.onlinelibrary.wiley.com/doi/10.1002/ecs2.2643",
+    "relatedRef": "Indian inland waters vary substantially by waterbody type; the study reports wide CH4 and CO2 flux ranges and should be treated as context, not as a directly transferable urban-pond rate.",
+    "relatedUrl": "https://doi.org/10.1111/gcb.12575",
+    "year": 2019,
+    "status": "candidate"
+  },
+  "water.cost": {
+    "value": 8,
+    "unit": "₹ crore",
+    "ref": "Retained project assumption; cost depends on excavation, lining, water treatment, and site conditions, none of which are specified.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "water.capacity": {
+    "value": 0,
+    "unit": "people",
+    "ref": "Not applicable; water body has no population capacity in this model.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "school.floorArea": {
+    "value": 6400,
+    "unit": "m²",
+    "ref": "Design assumption: 2×2 asset made of four 1,600 m² tiles.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "school.energyKwhPerM2Yr": {
+    "value": 35,
+    "unit": "kWh/m²/year",
+    "ref": "Midpoint of the published 30–40 kWh/m²/year estimated EPI range for Indian higher-secondary schools (Kumar et al., 2017).",
+    "url": "https://alcbt.gggi.org/wp-content/uploads/2025/02/2.6-Understanding-the-Basics-of-Building-Energy-Management.pdf",
+    "year": 2017,
+    "status": "candidate"
+  },
+  "school.cost": {
+    "value": 30,
+    "unit": "₹ crore",
+    "ref": "Project cost assumption; not researched for a comparable 6,400 m² school.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "hospital.floorArea": {
+    "value": 6400,
+    "unit": "m²",
+    "ref": "Design assumption: 2×2 asset made of four 1,600 m² tiles.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "hospital.energyKwhPerM2Yr": {
+    "value": 47.2,
+    "unit": "kWh/m²/year",
+    "ref": "Measured energy performance index for New Civil Hospital, Surat, reported in BEE's hospital energy-efficiency best-practice guide; used as a proxy, not a universal hospital benchmark.",
+    "url": "https://beeindia.gov.in/sites/default/files/HospitalEnergyEfficiencyBestPracticesGuide.pdf",
+    "year": 2008,
+    "status": "candidate"
+  },
+  "hospital.cost": {
+    "value": 60,
+    "unit": "₹ crore",
+    "ref": "Project cost assumption; not researched for a comparable 6,400 m² hospital.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "wastewater.flowM3Yr": {
+    "value": 3650000,
+    "unit": "m³/year",
+    "ref": "Design assumption: 10 million litres/day (MLD) × 365 days/year; plant size is illustrative.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "wastewater.energyKwhPerM3": {
+    "value": 0.14,
+    "unit": "kWh/m³ treated",
+    "ref": "Average electrical energy intensity reported for Indian sewage treatment plants from primary data on 50 operating plants. Actual rates vary by scale and treatment technology.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/26406876/",
+    "year": 2015,
+    "status": "candidate"
+  },
+  "wastewater.directKgPerM3": {
+    "value": 0.5772,
+    "unit": "kgCO₂e/m³ treated",
+    "ref": "Approximate fugitive share derived as 0.78 kgCO₂e/m³ average carbon footprint for large STPs × 74% reported fugitive-emission share. This is a proxy; treatment-specific direct emissions vary.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/26406876/",
+    "year": 2015,
+    "status": "candidate"
+  },
+  "wastewater.cost": {
+    "value": 100,
+    "unit": "₹ crore",
+    "ref": "Project cost assumption for an illustrative 10 MLD plant; not estimated from a comparable construction tender.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "datacenter.itLoadMw": {
+    "value": 1,
+    "unit": "MW IT load",
+    "ref": "Illustrative design assumption for a city-scale data-center asset.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "datacenter.utilization": {
+    "value": 0.4,
+    "unit": "fraction",
+    "ref": "Typical utilization assumption used in NITI Aayog's India data-center electricity-demand estimate.",
+    "url": "https://www.niti.gov.in/node/2177",
+    "year": 2025,
+    "status": "candidate"
+  },
+  "datacenter.pue": {
+    "value": 1.6,
+    "unit": "PUE ratio",
+    "ref": "Power usage effectiveness assumption used in NITI Aayog's India data-center electricity-demand estimate; facility energy = IT load × utilization × PUE × hours.",
+    "url": "https://www.niti.gov.in/node/2177",
+    "year": 2025,
+    "status": "candidate"
+  },
+  "datacenter.cost": {
+    "value": 250,
+    "unit": "₹ crore",
+    "ref": "Project cost assumption; data-center capital cost depends on capacity, redundancy, and site requirements.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "hotel.floorArea": {
+    "value": 6400,
+    "unit": "m²",
+    "ref": "Design assumption: a 2×2 asset with four 1,600 m² tiles.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "hotel.energyKwhPerM2Yr": {
+    "value": 290,
+    "unit": "kWh/m²/year",
+    "ref": "Published EPI benchmark for above-three-star hotels in India's composite climate zone; use is a regional proxy.",
+    "url": "https://www.nitiforstates.gov.in/public-assets/Best_Practices/Compendiums/Implementing%20Energy%20Efficiency%20in%20Buildings_%20A%20compendium%20of%20Experiences%20from%20Across%20the%20World.pdf",
+    "year": 2015,
+    "status": "candidate"
+  },
+  "hotel.cost": {
+    "value": 90,
+    "unit": "₹ crore",
+    "ref": "Illustrative project cost assumption; no comparable hotel construction estimate is modeled.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "mall.floorArea": {
+    "value": 6400,
+    "unit": "m²",
+    "ref": "Design assumption: a 2×2 asset with four 1,600 m² tiles.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "mall.energyKwhPerM2Yr": {
+    "value": 325,
+    "unit": "kWh/m²/year",
+    "ref": "Midpoint of the 300–350 kWh/m²/year one-star composite-climate shopping-mall EPI band in BEE's 2022–23 impact report.",
+    "url": "https://beeindia.gov.in/sites/default/files/publications/files/Impact%20Assessment%202022-23_%20FINAL%20Report.pdf",
+    "year": 2023,
+    "status": "candidate"
+  },
+  "mall.cost": {
+    "value": 120,
+    "unit": "₹ crore",
+    "ref": "Illustrative project cost assumption; no comparable mall construction estimate is modeled.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "landfill.ch4TonnesYr": {
+    "value": 340,
+    "unit": "tonnes CH₄/year at reference site",
+    "ref": "IPCC-method estimate for landfill methane emissions from Chandigarh's 350-tonne/day municipal waste site.",
+    "url": "https://www.frontiersin.org/journals/sustainable-cities/articles/10.3389/frsc.2024.1432995/full",
+    "year": 2024,
+    "status": "candidate"
+  },
+  "landfill.siteScale": {
+    "value": 0.0285714286,
+    "unit": "fraction of reference site",
+    "ref": "Illustrative 10 tonnes/day facility ÷ research site's approximately 350 tonnes/day; emissions are scaled linearly as a rough proxy.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "landfill.methaneGwp100": {
+    "value": 27,
+    "unit": "tCO₂e / tonne biogenic CH₄",
+    "ref": "IPCC Sixth Assessment Report 100-year global warming potential for biogenic methane.",
+    "url": "https://www.ipcc.ch/report/ar6/wg3/downloads/report/IPCC_AR6_WGIII_Annex-II.pdf",
+    "year": 2022,
+    "status": "cited"
+  },
+  "landfill.cost": {
+    "value": 40,
+    "unit": "₹ crore",
+    "ref": "Illustrative project cost assumption for a small landfill cell; no site-specific construction scope is modeled.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "urbanforest.treeCount": {
+    "value": 100,
+    "unit": "trees / asset",
+    "ref": "Illustrative planting density assumption for a 6,400 m² urban forest tile.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "urbanforest.co2KgPerTreeYr": {
+    "value": 55,
+    "unit": "kgCO₂/tree/year",
+    "ref": "Mean annual tree sequestration reported across urban green spaces in Panaji, India; not a guarantee for every species or site.",
+    "url": "https://www.mdpi.com/2071-1050/18/15/7789",
+    "year": 2026,
+    "status": "candidate"
+  },
+  "urbanforest.cost": {
+    "value": 8,
+    "unit": "₹ crore",
+    "ref": "Illustrative land and planting cost assumption; site acquisition and maintenance are not specified.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "wind.capacityMw": {
+    "value": 2,
+    "unit": "MW / turbine",
+    "ref": "Illustrative turbine nameplate capacity assumption.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "wind.generationGWh": {
+    "value": 106699,
+    "unit": "GWh/year national wind generation",
+    "ref": "India's reported wind generation for FY 2025–26 (106,699 million units, converted to GWh).",
+    "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2287725&lang=1&reg=1",
+    "year": 2026,
+    "status": "candidate"
+  },
+  "wind.installedCapacityMw": {
+    "value": 57443,
+    "unit": "MW national installed wind capacity",
+    "ref": "India's reported installed wind capacity as of 30 June 2026; end-year capacity makes the derived capacity factor a rough proxy.",
+    "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2287725&lang=1&reg=1",
+    "year": 2026,
+    "status": "candidate"
+  },
+  "wind.cost": {
+    "value": 28,
+    "unit": "₹ crore",
+    "ref": "Illustrative cost assumption for a 2 MW turbine; grid connection, access roads, and project-specific civil works are excluded.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "busdepot.buses": {
+    "value": 10,
+    "unit": "buses",
+    "ref": "Illustrative fleet-size assumption for a neighborhood depot.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "busdepot.kmPerDay": {
+    "value": 148,
+    "unit": "km/bus/day",
+    "ref": "Median daily distance reported for electric buses operating in Indore; applied here as an activity proxy for a diesel fleet.",
+    "url": "https://theicct.org/publication/evidence-from-real-world-operation-of-electric-buses-and-waste-collection-trucks-in-indore-india-oct26/",
+    "year": 2026,
+    "status": "candidate"
+  },
+  "busdepot.passengers": {
+    "value": 35,
+    "unit": "passengers/bus (average load)",
+    "ref": "Illustrative average passenger-load assumption; actual occupancy varies by route and time.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  },
+  "busdepot.kgPerPassengerKm": {
+    "value": 0.015161,
+    "unit": "kgCO₂/passenger-km",
+    "ref": "India-specific intracity bus transport emissions factor derived from State Road Transport Utility activity data.",
+    "url": "https://shaktifoundation.in/wp-content/uploads/2022/04/WRI-2015-India-Specific-Road-Transport-Emission-Factors.pdf",
+    "year": 2015,
+    "status": "candidate"
+  },
+  "busdepot.cost": {
+    "value": 25,
+    "unit": "₹ crore",
+    "ref": "Illustrative depot cost assumption; vehicle purchase and depot size are not separately modeled.",
+    "url": "",
+    "year": null,
+    "status": "assumption"
+  }
+}
